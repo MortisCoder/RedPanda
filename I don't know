@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Красная панда</title>
+    <link rel="stylesheet" href="mysite.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.4.0/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            color: #e0e0e0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: background 0.3s, color 0.3s;
+            background: linear-gradient(135deg, #6a82fb, #fc5c7d);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
+        }
+
+        @keyframes gradientAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .container {
+            max-width: 800px;
+            padding: 30px;
+            background-color: rgba(30, 30, 30, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-bottom: 40px;
+        }
+
+        .responsive-image {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 2.5em;
+            margin: 15px 0;
+        }
+
+        .text {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        button {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.3s;
+            margin: 20px auto;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: translateY(-2px);
+        }
+
+        #quiz {
+            background-color: rgba(30, 30, 30, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        .question {
+            margin-bottom: 20px;
+            font-size: 1.2em;
+        }
+
+        .answer {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            background-color: #333;
+            color: #ddd;
+        }
+
+        .correct-answer {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #4caf50;
+            display: none;
+        }
+
+        .answer.correct {
+            border-color: #4caf50;
+        }
+
+        .answer.incorrect {
+            border-color: #f44336;
+        }
+
+        #quiz h2 {
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        /* Стили для светлой темы */
+        .light-theme {
+            background: linear-gradient(135deg, #ffe5d8, #ffafbd);
+            color: #333333;
+        }
+
+        .light-theme .container,
+        .light-theme #quiz {
+            background-color: rgba(240, 240, 240, 0.95);
+        }
+
+        .light-theme .answer {
+            background-color: #ffffff;
+            color: #333333;
+        }
+
+        .light-theme button {
+            background-color: #4caf50;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <button id="theme-toggle">Сменить на светлую тему</button>
+    <div class="container" id="container">
+        <img src="red-panda.webp" alt="Редкая панда" class="responsive-image">
+        <h1 class="title">Красная панда</h1>
+        <p class="text">Красная панда — это маленькое млекопитающее, обитающее в горных лесах Восточной Гималаи и
+            юго-восточной Азии.</p>
+
+        <h2>Информация о красной панде</h2>
+        <p><strong>Рацион:</strong> Красные панды в основном питаются бамбуком, но также могут есть фрукты, ягоды и
+            насекомых.</p>
+        <p><strong>Среда обитания:</strong> Они обитают в высокогорных лесах Восточной Гималаи и юго-восточной Азии.</p>
+        <p><strong>Цвет меха:</strong> Мех рыжевато-коричневого цвета с черными ногами и белыми отметинами.</p>
+        <p><strong>Количество детенышей:</strong> Обычно от одного до четырех детенышей за раз.</p>
+        <p><strong>Вес:</strong> Взрослые красные панды могут весить от 3 до 6,5 килограммов.</p>
+
+        <button id="quizButton">Я все прочитал</button>
+    </div>
+
+    <div id="quiz" style="display: none;">
+        <h2>Викторина о красной панде</h2>
+        <p>Теперь проверьте свои знания о красных пандах, ответив на следующие вопросы:</p>
+
+        <div id="questions">
+            <div class="question">
+                <p>1. Какой основной рацион красной панды?</p>
+                <input type="text" class="answer" placeholder="Ваш ответ...">
+                <p class="correct-answer" style="display: none;">бамбук</p>
+            </div>
+            <div class="question">
+                <p>2. Где обитают красные панды?</p>
+                <input type="text" class="answer" placeholder="Ваш ответ...">
+                <p class="correct-answer" style="display: none;">Восточная Гималая и юго-восточная Азия</p>
+            </div>
+            <div class="question">
+                <p>3. Какой цвет меха у красной панды?</p>
+                <input type="text" class="answer" placeholder="Ваш ответ...">
+                <p class="correct-answer" style="display: none;">Рыжевато-коричневый с черными ногами</p>
+            </div>
+            <div class="question">
+                <p>4. Сколько детенышей обычно рожает самка красной панды?</p>
+                <input type="text" class="answer" placeholder="Ваш ответ...">
+                <p class="correct-answer" style="display: none;">От одного до четырех</p>
+            </div>
+            <div class="question">
+                <p>5. Какой вес может достигать взрослая красная панда?</p>
+                <input type="text" class="answer" placeholder="Ваш ответ...">
+                <p class="correct-answer" style="display: none;">От 3 до 6,5 килограммов</p>
+            </div>
+        </div>
+        <button id="submitQuiz">Отправить ответы</button>
+        <p id="result" style="margin-top: 10px;"></p>
+    </div>
+
+    <script>
+        document.getElementById('quizButton').addEventListener('click', function () {
+            document.getElementById('quiz').style.display = 'block';
+            this.style.display = 'none'; // Скрыть кнопку после нажатия
+        });
+
+        document.getElementById('submitQuiz').addEventListener('click', function () {
+            const questions = document.querySelectorAll('.question');
+            let resultText = '';
+            let allCorrect = true; // Флаг для проверки всех правильных ответов
+
+            questions.forEach((question, index) => {
+                const answerInput = question.querySelector('.answer');
+                const correctAnswer = question.querySelector('.correct-answer').textContent.trim().toLowerCase();
+
+                if (answerInput.value.trim().toLowerCase() === correctAnswer) {
+                    resultText += `Вопрос ${index + 1}: Правильно!\n`;
+                    answerInput.classList.add('correct');
+                    answerInput.classList.remove('incorrect');
+                } else {
+                    resultText += `Вопрос ${index + 1}: Неправильно! Правильный ответ: ${correctAnswer}\n`;
+                    answerInput.classList.add('incorrect');
+                    allCorrect = false; // Если хоть один ответ неправильный, устанавливаем флаг в false
+                }
+
+                // Обработчик ввода для изменения классов
+                answerInput.addEventListener('input', function () {
+                    if (this.value.trim().toLowerCase() === correctAnswer) {
+                        this.classList.add('correct');
+                        this.classList.remove('incorrect');
+                    } else {
+                        this.classList.remove('correct');
+                        this.classList.add('incorrect');
+                    }
+                });
+            });
+
+            document.getElementById('result').textContent = resultText;
+
+            // Если все ответы правильные, запускаем конфетти
+            if (allCorrect) {
+                confetti();
+            }
+        });
+
+        document.getElementById('theme-toggle').addEventListener('click', function () {
+            document.body.classList.toggle('light-theme');
+            if (document.body.classList.contains('light-theme')) {
+                this.textContent = 'Сменить на темную тему';
+            } else {
+                this.textContent = 'Сменить на светлую тему';
+            }
+        });
+    </script>
+</body>
+
+</html>
